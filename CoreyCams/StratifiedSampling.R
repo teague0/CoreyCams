@@ -28,12 +28,13 @@ mapCC <- get_map(location = centerCC, zoom = 14, maptype = "satellite")
 camNums <- c(11, 27, 36, 40)
 camSites <- ccroad %>% filter(X %in% camNums)
 
+#To save as KML
 camsite_sf <- st_as_sf(camSites, 
                        coords = c("coords.x1", "coords.x2"),
                        crs = 4326)
 st_write(camsite_sf, "./output/CCRoad.kml", driver = "kml")
 
-
+#Create a map
 ggmap(mapCC)+
   geom_text(data = ccroad, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "white")+
   geom_text(data = camSites, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "red")
