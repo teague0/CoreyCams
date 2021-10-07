@@ -1,0 +1,53 @@
+```{r}
+
+library(sf)
+library(tidyverse)
+library(mapview)
+
+ccRoad <- read_sf("CCRoad_WHOLE.shp")
+ccRoad <- st_cast(ccRoad, "POLYGON")
+ccRoad %>% st_geometry() %>% plot
+
+```
+
+
+```{r}
+
+library(ggplot2)
+library(ggmap)
+
+grdpts <- sf::st_make_grid(ccRoad,
+                           n = c(20,20),
+                           what = "centers")
+
+my.points <- sf::st_sf(grdpts)
+
+map <- mapview(ccRoad)
+pointsRed <- mapview(my.points, cex=3, color="red")
+map+pointsRed
+
+pointsInside <- sf::st_join(x = my.points, y = ccRoad, left = FALSE)
+pointsInRed <- mapview(pointsInside, cex=3, color="red")
+map+pointsInRed
+
+pointIn_df <- as(pointsInside, "Spatial") #convert to spatial points data frame
+pointIn_df <- as.data.frame(pointIn_df) #convert to flat data frame
+pointIn_df.s <- pointIn_df %>% 
+  filter(coords.x2 < 30.46)
+
+centerCC <- c(ccRoad$coords.x1[33], ccRoad$coords.x2[33])
+
+camNums <- c(17, 54, 28, 16, 52, 13, 23, 39, 19, 32, 67)
+camSites <- ccRoad %>% filter("..1" %in% camNums)
+
+camsite_sf <- st_as_sf(camSites, 
+                       coords = c("coords.x1", "coords.x2"),
+                       crs = 4326)
+write.csv2(camsite_sf, "./output/CCRoad.kml", driver = "kml")
+
+
+ggmap(mapCC)+
+  geom_text(data = ccRoad, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "white")+
+  geom_text(data = camSites, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "red")
+
+```
