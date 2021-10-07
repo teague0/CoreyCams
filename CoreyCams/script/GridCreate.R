@@ -23,6 +23,11 @@ pointsInside <- sf::st_join(x = my.points, y = ccRoad, left = FALSE)
 pointsInRed <- mapview(pointsInside, cex=3, color="red")
 map+pointsInRed
 
+
+
+
+
+
 #Points from the Northern parcel are still included. Need to drop anything north of 30.46
 pointIn_df <- as(pointsInside, "Spatial") #convert to spatial points data frame
 pointIn_df <- as.data.frame(pointIn_df) #convert to flat data frame
