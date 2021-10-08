@@ -52,6 +52,7 @@ camSites <- ccroad_df %>% filter(X %in% camNums)
 camsite_sf <- st_as_sf(camSites, 
                        coords = c("coords.x1", "coords.x2"),
                        crs = 4326)
+<<<<<<< HEAD
 st_write(camsite_sf, "./output/CCRoad.kml", driver = "kml")
 
 
@@ -64,4 +65,13 @@ print(ccroadmap)
 dev.off()
 
 
+=======
+write.csv2(camsite_sf, "./output/CCRoad.kml", driver = "kml")
+
+
+ggmap(mapCC)+
+  geom_text(data = ccroad, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "white")+
+  geom_text(data = camSites, aes(x = coords.x1, y = coords.x2, label=X),hjust=0, vjust=0, color = "red")
+
+>>>>>>> 70e407c36429e3d608035b72e35d035482e36d7b
 ```
